@@ -1,0 +1,22 @@
+<?php
+	if(!isset($_COOKIE["login"])){
+		header("location:login.php?login=1");
+	}
+	else{
+		$email=$_COOKIE["login"];
+		$conn=mysqli_connect("localhost","root","","wed_web");
+		$rs=mysqli_query($conn,"select * from details where email='$email'");
+		if($r=mysqli_fetch_array($rs)){
+			$target="image/".$r["code"].".jpg";
+			if(move_uploaded_file($_FILES['update_photo']['tmp_name'],$target)){
+				header("location:view_profile.php?imgsuccess=1");
+			}
+			else{
+				header("location:view_profile.php?upload_error=1");
+			}
+		}
+		else{
+			header("location:logout.php");
+		}
+	}
+?>

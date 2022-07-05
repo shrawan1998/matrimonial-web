@@ -1,0 +1,39 @@
+<?php
+	if(!isset($_COOKIE["login"])){
+		header("location:login.php?login=1");
+	}
+	else{
+		$email=$_COOKIE["login"];
+		if(empty($_POST["cpass"]) || empty($_POST["npass"]) || empty($_POST["repass"])){
+			header("location:login.php?empty=1");
+		}
+		else{
+			$cp=$_POST["cpass"];
+			$np=$_POST["npass"];
+			$rp=$_POST["repass"];
+			$conn=mysqli_connect("localhost","root","","wed_web");
+			$rs=mysqli_query($conn,"select * from details where email='$email'");
+			if($r=mysqli_fetch_array($rs)){
+				if($cp==$r["password"]){
+					if($np==$rp){
+						if(mysqli_query($conn,"update details set password='$np' where email='$email'")>0){
+							header("location:change_pass.php?success=1");
+						}
+						else{
+							header("location:change_pass.php?again=1");
+						}
+					}
+					else{
+						header("location:change_pass.php?mismatch=1");
+					}
+				}
+				else{
+					header("location:change_pass.php?incorrect_pass=1");
+				}
+			}
+			else{
+				header("location:change_pass.php?incorrect_email=1");
+			}
+		}
+	}
+?>
